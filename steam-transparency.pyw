@@ -1,8 +1,6 @@
 import binascii
-import sys
 import os
-from tkinter import Tk   
-from tkinter.filedialog import askopenfilenames
+
 
 def DumpFile(filepath):
     filename, f_ext = os.path.splitext(filepath)
@@ -21,17 +19,8 @@ def DumpFile(filepath):
 
     bytes_data = binascii.unhexlify(data)
 
-    fp = open(filename + "_transparencyFix" + f_ext, "wb+")
+    fp = open(filename +  f_ext, "wb+")
     fp.write(bytes_data)
     fp.close()
 
-try:
-    sys.argv[1] = sys.argv[1] #hack 
-    for x in sys.argv:
-        DumpFile(x) 
-except IndexError:
-    Tk().withdraw()
-    image_formats= [("Image Files", "*.jpg"),("Image Files", "*.png"),("Image Files", "*.gif"),("Image Files", "*.jpeg")]
-    for x in askopenfilenames(filetypes=image_formats):
-        DumpFile(x) 
 

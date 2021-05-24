@@ -1,29 +1,40 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for,send_file
+import os
+import io
+import mimetypes
+from werkzeug.utils import secure_filename
 from datetime import datetime
-app = Flask(__name__)
+import steamtransparency
+app = Flask(__name__, template_folder='templates')
+app.config['UPLOAD_FOLDER'] = "uploads/"
+@app.route("/")
+@app.route("/index")
+def index():
 
-@app.route('/')
-def homepage():
-    return render_template("upload.html")
-    
-@app.route("/upload", methods=["POST"])
+    return render_template("/index.html")
+@app.route('/upload', methods=['POST'])
 def upload():
-    target = os.path.join(APP_ROOT, 'images/')
-    if not os.path.isdir(target):
-            os.mkdir(target)
-    else:
-        print("Couldn't create upload directory: {}".format(target))
-
-    for upload in request.files.getlist("file"):
-        print("LOG: filename: {}".format(upload.filename))
-        filename = upload.filename
-        destination = "/".join([target, filename])
-        print ("LOG: Accept incoming file:", filename)
-        print ("LOG: Save it to:", destination)
-        upload.save(destination)
-
-    return render_template("display_image.html", image_name=filename)
-    
+    print("test")
+    uploaded_file = request.files['file']
+    #filename = secure_filename(uploaded_file.filename)
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename)))
+        steamtransparency.DumpFile(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename)))
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename))
+        
+        return_data = io.BytesIO()
+        with open(file_path, 'rb') as fo:
+            return_data.write(fo.read())
+        # (after writing, cursor will be at last byte, so move it to start)
+        return_data.seek(0)
+        
+        os.remove(file_path)
+        print(f.filename + "HELLOOOOOOOOOOOOOOOOOOOO!")
+        print(mimetypes.guess_type(f.filename))
+        return send_file(return_data, mimetype=mimetypes.guess_type(f.filename)[0],
+                         attachment_filename=f.filename)
+        
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
 

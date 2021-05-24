@@ -1,6 +1,7 @@
 import binascii
 import sys
 import os
+import steam-transparency
 from tkinter import Tk   
 from tkinter.filedialog import askopenfilename
 try:
