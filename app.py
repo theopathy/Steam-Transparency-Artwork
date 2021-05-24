@@ -33,7 +33,7 @@ def upload():
         print(f.filename + "HELLOOOOOOOOOOOOOOOOOOOO!")
         print(mimetypes.guess_type(f.filename))
         return send_file(return_data, mimetype=mimetypes.guess_type(f.filename)[0],
-                         attachment_filename=f.filename)
+                         attachment_filename=f.filename,as_attachment=True)
         
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
