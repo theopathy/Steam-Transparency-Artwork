@@ -1,5 +1,4 @@
 Flask
 gunicorn
-binascii
 mimetypes
 werkzeug
