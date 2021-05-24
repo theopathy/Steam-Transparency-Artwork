@@ -3,7 +3,7 @@ import os
 import io
 import mimetypes
 from werkzeug.utils import secure_filename
-from datetime import datetime
+
 import steamtransparency
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = "uploads/"
